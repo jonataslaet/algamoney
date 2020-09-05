@@ -2,6 +2,7 @@ package br.com.jonataslaet.service;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +35,14 @@ public class CategoriaService {
 		cr.save(categoria);
 		
 		return ResponseEntity.created(location).body(categoria);
+	}
+
+	public ResponseEntity<CategoriaDto> buscarCategoria(Long codigo) {
+		Optional<Categoria> categoria = cr.findById(codigo);
+		if (!categoria.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		CategoriaDto categoriaDto = new CategoriaDto(categoria.get());
+		return ResponseEntity.ok().body(categoriaDto);
 	}
 }
