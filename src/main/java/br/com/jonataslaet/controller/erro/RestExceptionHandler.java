@@ -33,8 +33,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		System.out.println("Entrou em -> ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,\n" + 
-				"			HttpHeaders headers, HttpStatus status, WebRequest request)");
 		ErroDeApi apiError = new ErroDeApi(HttpStatus.BAD_REQUEST);
 		apiError.setMessagemParaCliente("Erro de validação");
 		apiError.setMensagemParaDesenvolvedor(ex.getLocalizedMessage());
