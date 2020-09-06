@@ -28,11 +28,10 @@ public class CategoriaService {
 	public ResponseEntity<Categoria> criarCategoria(CadastroCategoria cadastroCategoria) {
 
 		Categoria categoria = new Categoria(cadastroCategoria.getNome());
-
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(categoria.getCodigo()).toUri();
-		
 		cr.save(categoria);
+		
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{codigo}")
+				.buildAndExpand(categoria.getCodigo()).toUri();
 		
 		return ResponseEntity.created(location).body(categoria);
 	}

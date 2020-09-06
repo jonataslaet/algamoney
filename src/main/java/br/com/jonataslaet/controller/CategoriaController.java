@@ -2,6 +2,8 @@ package br.com.jonataslaet.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +31,7 @@ public class CategoriaController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Categoria> criarCategoria(@RequestBody CadastroCategoria categoria){
+	public ResponseEntity<Categoria> criarCategoria(@Valid @RequestBody CadastroCategoria categoria){
 		return cs.criarCategoria(categoria);
 	}
 	
