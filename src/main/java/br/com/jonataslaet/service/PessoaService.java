@@ -44,4 +44,13 @@ public class PessoaService {
 		PessoaDto pessoaDto = new PessoaDto(pessoa.get());
 		return ResponseEntity.ok().body(pessoaDto);
 	}
+
+	public ResponseEntity<?> deletarPessoa(Long codigo) {
+		Optional<Pessoa> pessoa = pr.findById(codigo);
+		if (!pessoa.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		pr.deleteById(codigo);
+		return ResponseEntity.noContent().build();
+	}
 }

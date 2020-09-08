@@ -44,4 +44,13 @@ public class CategoriaService {
 		CategoriaDto categoriaDto = new CategoriaDto(categoria.get());
 		return ResponseEntity.ok().body(categoriaDto);
 	}
+	
+	public ResponseEntity<Categoria> deletarCategoria(Long codigo) {
+		Optional<Categoria> categoria = cr.findById(codigo);
+		if (!categoria.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		cr.deleteById(codigo);
+		return ResponseEntity.noContent().build();
+	}
 }
