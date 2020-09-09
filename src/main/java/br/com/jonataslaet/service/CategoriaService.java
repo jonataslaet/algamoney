@@ -13,6 +13,7 @@ import br.com.jonataslaet.controller.cadastro.CadastroCategoria;
 import br.com.jonataslaet.controller.dto.CategoriaDto;
 import br.com.jonataslaet.model.Categoria;
 import br.com.jonataslaet.repository.CategoriaRepository;
+import br.com.jonataslaet.utilidade.Utils;
 
 @Service
 public class CategoriaService {
@@ -51,6 +52,20 @@ public class CategoriaService {
 			return ResponseEntity.notFound().build();
 		}
 		cr.deleteById(codigo);
+		return ResponseEntity.noContent().build();
+	}
+
+	public ResponseEntity<?> atualizarCategoria(Long codigo, CadastroCategoria cadastroNovoCategoria) throws IllegalArgumentException, IllegalAccessException {
+		Optional<Categoria> categoria = cr.findById(codigo);
+		if (!categoria.isPresent()) {
+			return ResponseEntity.notFound().build();
+		}
+		Categoria categoriaAtualizada = categoria.get();
+		Categoria categoriaQueAtualiza = new Categoria(cadastroNovoCategoria.getNome());
+		
+		Utils.atualizarObjeto(categoriaAtualizada, categoriaQueAtualiza);
+		
+		cr.save(categoriaAtualizada);
 		return ResponseEntity.noContent().build();
 	}
 }
