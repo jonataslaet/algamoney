@@ -24,8 +24,29 @@ public class Mainzao {
 //			}
 			System.out.println();
 		}
-		
+		atualizarObjetos(categoriaCarregada, categoriaSubstituta);
+		for (Field campo : categoriaCarregada.getClass().getDeclaredFields()) {
+			campo.setAccessible(true);
+			Object valor = campo.get(categoriaCarregada);
+			System.out.println("1a: "+campo.getName() + "=" + valor);
+			System.out.println("2a: "+campo.getName() + "=" + campo.get(categoriaSubstituta));
+//			if (valor != null) {
+//				System.out.println("1a: "+campo.getName() + "=" + valor);
+//				System.out.println("2a: "+campo.getName() + "=" + campo.get(categoriaCarregada));
+//			}
+			System.out.println();
+		}
 	}
 
+	public static void atualizarObjetos(Object titular, Object substituto) throws IllegalArgumentException, IllegalAccessException {
+		for (Field campo : titular.getClass().getDeclaredFields()) {
+			campo.setAccessible(true);
+			Object valorSubstituto = campo.get(substituto);
+			if (valorSubstituto != null) {
+				campo.set(titular, valorSubstituto);
+			}
+		}
+		System.out.println("Valores atualizados");
+	}
 	
 }
