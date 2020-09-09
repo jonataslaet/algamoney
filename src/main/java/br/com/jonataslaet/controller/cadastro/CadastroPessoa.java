@@ -7,6 +7,8 @@ import br.com.jonataslaet.model.Endereco;
 
 public class CadastroPessoa {
 	
+	private Long codigo;
+	
 	@NotNull
 	@Size(min=5, max=50)
 	private String nome;
@@ -15,6 +17,14 @@ public class CadastroPessoa {
 
 	public CadastroPessoa() {
 		
+	}
+	
+	public Long getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(Long codigo) {
+		this.codigo = codigo;
 	}
 	
 	public String getNome() {

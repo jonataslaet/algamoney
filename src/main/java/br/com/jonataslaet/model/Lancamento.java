@@ -15,34 +15,51 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="lancamento")
+@Table(name = "lancamento")
 public class Lancamento {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codigo;
-	
+
 	private String descricao;
-	
-	@Column(name="data_vencimento")
+
+	@Column(name = "data_vencimento")
 	private LocalDate dataVencimento;
-	
-	@Column(name="data_pagamento")
+
+	@Column(name = "data_pagamento")
 	private LocalDate dataPagamento;
-	
+
 	private BigDecimal valor;
 	private String observacao;
-	
+
 	@Enumerated(EnumType.STRING)
 	private TipoLancamento tipo;
-	
+
 	@ManyToOne
-	@JoinColumn(name="codigo_categoria")
+	@JoinColumn(name = "codigo_categoria")
 	private Categoria categoria;
-	
+
 	@ManyToOne
-	@JoinColumn(name="codigo_pessoa")
+	@JoinColumn(name = "codigo_pessoa")
 	private Pessoa pessoa;
+
+	public Lancamento() {
+
+	}
+
+	public Lancamento(String descricao, LocalDate dataVencimento, LocalDate dataPagamento, BigDecimal valor,
+			String observacao, TipoLancamento tipo) {
+		super();
+		this.descricao = descricao;
+		this.dataVencimento = dataVencimento;
+		this.dataPagamento = dataPagamento;
+		this.valor = valor;
+		this.observacao = observacao;
+		this.tipo = tipo;
+		this.categoria = categoria;
+		this.pessoa = pessoa;
+	}
 
 	public Long getCodigo() {
 		return codigo;
@@ -140,6 +157,5 @@ public class Lancamento {
 			return false;
 		return true;
 	}
-	
-	
+
 }
