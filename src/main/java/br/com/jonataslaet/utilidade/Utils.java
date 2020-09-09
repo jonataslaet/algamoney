@@ -1,5 +1,6 @@
 package br.com.jonataslaet.utilidade;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -14,6 +15,16 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 
 public class Utils {
 
+	public static void atualizarObjeto(Object titular, Object substituto) throws IllegalArgumentException, IllegalAccessException {
+		for (Field campo : titular.getClass().getDeclaredFields()) {
+			campo.setAccessible(true);
+			Object valorSubstituto = campo.get(substituto);
+			if (valorSubstituto != null) {
+				campo.set(titular, valorSubstituto);
+			}
+		}
+	}
+	
 	public static List<String> getTodosOsNomesDePaises() {
 		String[] locales = Locale.getISOCountries();
 		List<String> nomesDosPaises = new ArrayList<String>();
