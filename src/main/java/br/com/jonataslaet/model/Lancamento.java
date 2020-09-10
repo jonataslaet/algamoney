@@ -57,8 +57,6 @@ public class Lancamento {
 		this.valor = valor;
 		this.observacao = observacao;
 		this.tipo = tipo;
-		this.categoria = categoria;
-		this.pessoa = pessoa;
 	}
 
 	public Long getCodigo() {
