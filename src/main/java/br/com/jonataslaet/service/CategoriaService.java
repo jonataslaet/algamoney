@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.jonataslaet.controller.cadastro.CadastroCategoria;
 import br.com.jonataslaet.controller.dto.CategoriaDto;
+import br.com.jonataslaet.controller.erro.ObjectNotFoundException;
 import br.com.jonataslaet.model.Categoria;
 import br.com.jonataslaet.repository.CategoriaRepository;
 import br.com.jonataslaet.utilidade.Utils;
@@ -40,7 +41,7 @@ public class CategoriaService {
 	public ResponseEntity<CategoriaDto> buscarCategoria(Long codigo) {
 		Optional<Categoria> categoria = cr.findById(codigo);
 		if (!categoria.isPresent()) {
-			return ResponseEntity.notFound().build();
+			throw new ObjectNotFoundException("Categoria não encontrada");
 		}
 		CategoriaDto categoriaDto = new CategoriaDto(categoria.get());
 		return ResponseEntity.ok().body(categoriaDto);

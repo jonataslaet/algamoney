@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -32,7 +33,7 @@ public class ErroDeApi {
     	this.instante = LocalDateTime.now();
         this.status = status;
         this.messagemParaCliente = message;
-        this.mensagemParaDesenvolvedor = ex.getLocalizedMessage();
+        this.mensagemParaDesenvolvedor = ExceptionUtils.getMessage(ex);
     }
 
     public HttpStatus getStatus() {

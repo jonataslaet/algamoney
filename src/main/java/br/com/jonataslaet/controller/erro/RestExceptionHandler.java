@@ -1,5 +1,6 @@
 package br.com.jonataslaet.controller.erro;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,9 +36,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		ErroDeApi apiError = new ErroDeApi(HttpStatus.BAD_REQUEST);
 		apiError.setMessagemParaCliente("Erro de validação");
-		apiError.setMensagemParaDesenvolvedor(ex.getLocalizedMessage());
+		apiError.setMensagemParaDesenvolvedor(ExceptionUtils.getMessage(ex));
 		apiError.adicionaEmErrosDeValidacaoDeCampo(ex.getBindingResult().getFieldErrors());
 		apiError.adicionaEmErrosDeValidacaoDeObjeto(ex.getBindingResult().getGlobalErrors());
+		return construtorDaEntidadeResposta(apiError);
+	}
+	
+	@ExceptionHandler({ObjectNotFoundException.class})
+	protected ResponseEntity<Object> handleEntityNotFound(ObjectNotFoundException ex) {
+		String erro = "Recurso não encontrado";
+		ErroDeApi apiError = new ErroDeApi(HttpStatus.NOT_FOUND, erro, ex);
 		return construtorDaEntidadeResposta(apiError);
 	}
 	

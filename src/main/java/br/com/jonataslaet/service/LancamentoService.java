@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.jonataslaet.controller.cadastro.CadastroLancamento;
 import br.com.jonataslaet.controller.dto.LancamentoDto;
+import br.com.jonataslaet.controller.erro.ObjectNotFoundException;
 import br.com.jonataslaet.model.Categoria;
 import br.com.jonataslaet.model.Lancamento;
 import br.com.jonataslaet.model.Pessoa;
@@ -40,7 +41,7 @@ public class LancamentoService {
 	public ResponseEntity<LancamentoDto> buscarLancamento(Long codigo) {
 		Optional<Lancamento> lancamento = lr.findById(codigo);
 		if (!lancamento.isPresent()) {
-			return ResponseEntity.notFound().build();
+			throw new ObjectNotFoundException("Lançamento não encontrado");
 		}
 		LancamentoDto lancamentoDto = new LancamentoDto(lancamento.get());
 		return ResponseEntity.ok().body(lancamentoDto);
@@ -49,7 +50,7 @@ public class LancamentoService {
 	public ResponseEntity<?> deletarLancamento(Long codigo) {
 		Optional<Lancamento> lancamento = lr.findById(codigo);
 		if (!lancamento.isPresent()) {
-			return ResponseEntity.notFound().build();
+			throw new ObjectNotFoundException("Lançamento não encontrado");
 		}
 		lr.deleteById(codigo);
 		return ResponseEntity.noContent().build();
@@ -59,10 +60,17 @@ public class LancamentoService {
 		Lancamento lancamento = new Lancamento(cadastroLancamento.getDescricao(),
 				cadastroLancamento.getDataVencimento(), cadastroLancamento.getDataPagamento(),
 				cadastroLancamento.getValor(), cadastroLancamento.getObservacao(), cadastroLancamento.getTipo());
-		Categoria categoriaNoBanco = cr.findById(cadastroLancamento.getCategoria().getCodigo()).get();
-		Pessoa pessoaNoBanco = pr.findById(cadastroLancamento.getPessoa().getCodigo()).get();
-		lancamento.setCategoria(categoriaNoBanco);
-		lancamento.setPessoa(pessoaNoBanco);
+		
+		Optional<Categoria> categoriaNoBanco = cr.findById(cadastroLancamento.getCategoria().getCodigo());
+		Optional<Pessoa> pessoaNoBanco = pr.findById(cadastroLancamento.getPessoa().getCodigo());
+		if (!categoriaNoBanco.isPresent()) {
+			throw new ObjectNotFoundException("Categoria não encontrada");
+		}
+		if (!pessoaNoBanco.isPresent()) {
+			throw new ObjectNotFoundException("Pessoa não encontrada");
+		}
+		lancamento.setCategoria(categoriaNoBanco.get());
+		lancamento.setPessoa(pessoaNoBanco.get());
 		lr.save(lancamento);
 		
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{codigo}")

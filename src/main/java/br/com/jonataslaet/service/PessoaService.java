@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.jonataslaet.controller.cadastro.CadastroPessoa;
 import br.com.jonataslaet.controller.dto.PessoaDto;
+import br.com.jonataslaet.controller.erro.ObjectNotFoundException;
 import br.com.jonataslaet.model.Pessoa;
 import br.com.jonataslaet.repository.PessoaRepository;
 
@@ -39,7 +40,7 @@ public class PessoaService {
 	public ResponseEntity<PessoaDto> buscarPessoa(Long codigo) {
 		Optional<Pessoa> pessoa = pr.findById(codigo);
 		if (!pessoa.isPresent()) {
-			return ResponseEntity.notFound().build();
+			throw new ObjectNotFoundException("Pessoa não encontrada");
 		}
 		PessoaDto pessoaDto = new PessoaDto(pessoa.get());
 		return ResponseEntity.ok().body(pessoaDto);
@@ -48,7 +49,7 @@ public class PessoaService {
 	public ResponseEntity<?> deletarPessoa(Long codigo) {
 		Optional<Pessoa> pessoa = pr.findById(codigo);
 		if (!pessoa.isPresent()) {
-			return ResponseEntity.notFound().build();
+			throw new ObjectNotFoundException("Pessoa não encontrada");
 		}
 		pr.deleteById(codigo);
 		return ResponseEntity.noContent().build();

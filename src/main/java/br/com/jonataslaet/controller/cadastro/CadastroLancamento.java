@@ -3,6 +3,8 @@ package br.com.jonataslaet.controller.cadastro;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.jonataslaet.model.Categoria;
@@ -13,17 +15,28 @@ public class CadastroLancamento {
 
 	private Long codigo;
 
+	@NotNull
 	private String descricao;
 
+	@NotNull
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataVencimento;
 
 	@JsonFormat(pattern = "dd/MM/yyyy")
 	private LocalDate dataPagamento;
 
+	@NotNull
 	private BigDecimal valor;
+	
+	@NotNull
+	private TipoLancamento tipo;
+	
 	private String observacao;
+	
+	@NotNull
 	private Categoria categoria;
+	
+	@NotNull
 	private Pessoa pessoa;
 
 	public CadastroLancamento() {
@@ -85,8 +98,6 @@ public class CadastroLancamento {
 	public void setTipo(TipoLancamento tipo) {
 		this.tipo = tipo;
 	}
-
-	private TipoLancamento tipo;
 
 	public Categoria getCategoria() {
 		return categoria;
