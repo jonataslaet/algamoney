@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,5 +45,15 @@ public class PessoaController {
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deletarPessoa(@PathVariable Long id){
 		return ps.deletarPessoa(id);
+	}
+	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<?> atualizarPessoa(@PathVariable Long id, @Valid @RequestBody CadastroPessoa cadastroPessoa) throws IllegalArgumentException, IllegalAccessException{
+		return ps.atualizarPessoa(id, cadastroPessoa);
+	}
+	
+	@PutMapping(value = "/{id}/ativo")
+	public ResponseEntity<?> mudarStatusAtivo(@PathVariable Long id, @RequestBody boolean status){
+		return ps.mudarStatusAtivo(id, status);
 	}
 }

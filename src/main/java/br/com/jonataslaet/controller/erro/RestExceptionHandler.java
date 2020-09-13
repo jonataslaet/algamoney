@@ -49,6 +49,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		return construtorDaEntidadeResposta(apiError);
 	}
 	
+	@ExceptionHandler(PessoaInativaException.class)
+	protected ResponseEntity<Object> handlePessoaInativa(PessoaInativaException ex){
+		String mensagemDeErroAmigavel = "Pessoa inativa";
+		ErroDeApi apiError = new ErroDeApi(HttpStatus.BAD_REQUEST, mensagemDeErroAmigavel, ex);
+		return construtorDaEntidadeResposta(apiError);
+	}
+	
 	private ResponseEntity<Object> construtorDaEntidadeResposta(ErroDeApi ErroDeApi) {
 		return new ResponseEntity<>(ErroDeApi, ErroDeApi.getStatus());
 	}

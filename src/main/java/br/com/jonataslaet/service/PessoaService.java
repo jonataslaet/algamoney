@@ -14,6 +14,7 @@ import br.com.jonataslaet.controller.dto.PessoaDto;
 import br.com.jonataslaet.controller.erro.ObjectNotFoundException;
 import br.com.jonataslaet.model.Pessoa;
 import br.com.jonataslaet.repository.PessoaRepository;
+import br.com.jonataslaet.utilidade.Utils;
 
 @Service
 public class PessoaService {
@@ -52,6 +53,31 @@ public class PessoaService {
 			throw new ObjectNotFoundException("Pessoa não encontrada");
 		}
 		pr.deleteById(codigo);
+		return ResponseEntity.noContent().build();
+	}
+	
+	public ResponseEntity<?> atualizarPessoa(Long codigo, CadastroPessoa cadastroNovoPessoa) throws IllegalArgumentException, IllegalAccessException {
+		Optional<Pessoa> pessoa = pr.findById(codigo);
+		if (!pessoa.isPresent()) {
+			throw new ObjectNotFoundException("Pessoa não encontrada");
+		}
+		Pessoa pessoaAtualizada = pessoa.get();
+		Pessoa pessoaQueAtualiza = new Pessoa(cadastroNovoPessoa.getNome(), cadastroNovoPessoa.isAtivo(), cadastroNovoPessoa.getEndereco());
+		
+		Utils.atualizarObjeto(pessoaAtualizada, pessoaQueAtualiza);
+		
+		pr.save(pessoaAtualizada);
+		return ResponseEntity.noContent().build();
+	}
+
+	public ResponseEntity<?> mudarStatusAtivo(Long id, boolean status) {
+		Optional<Pessoa> pessoa = pr.findById(id);
+		if (!pessoa.isPresent()) {
+			throw new ObjectNotFoundException("Pessoa não encontrada");
+		}
+		Pessoa pessoaDoBanco = pessoa.get();
+		pessoaDoBanco.setAtivo(status);
+		pr.save(pessoaDoBanco);
 		return ResponseEntity.noContent().build();
 	}
 }

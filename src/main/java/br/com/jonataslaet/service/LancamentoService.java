@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import br.com.jonataslaet.controller.cadastro.CadastroLancamento;
 import br.com.jonataslaet.controller.dto.LancamentoDto;
 import br.com.jonataslaet.controller.erro.ObjectNotFoundException;
+import br.com.jonataslaet.controller.erro.PessoaInativaException;
 import br.com.jonataslaet.model.Categoria;
 import br.com.jonataslaet.model.Lancamento;
 import br.com.jonataslaet.model.Pessoa;
@@ -66,11 +67,21 @@ public class LancamentoService {
 		if (!categoriaNoBanco.isPresent()) {
 			throw new ObjectNotFoundException("Categoria não encontrada");
 		}
+		
 		if (!pessoaNoBanco.isPresent()) {
 			throw new ObjectNotFoundException("Pessoa não encontrada");
 		}
-		lancamento.setCategoria(categoriaNoBanco.get());
-		lancamento.setPessoa(pessoaNoBanco.get());
+		
+		Categoria categoria = categoriaNoBanco.get();
+		lancamento.setCategoria(categoria);
+		
+		Pessoa pessoa = pessoaNoBanco.get();		
+
+		if (!pessoa.isAtivo()) {
+			throw new PessoaInativaException();
+		}
+		
+		lancamento.setPessoa(pessoa);
 		lr.save(lancamento);
 		
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{codigo}")
