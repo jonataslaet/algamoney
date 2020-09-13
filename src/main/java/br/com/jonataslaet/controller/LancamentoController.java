@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.jonataslaet.controller.cadastro.CadastroLancamento;
 import br.com.jonataslaet.controller.dto.LancamentoDto;
 import br.com.jonataslaet.model.Lancamento;
+import br.com.jonataslaet.repository.filter.LancamentoFilter;
 import br.com.jonataslaet.service.LancamentoService;
 
 @RestController
@@ -27,8 +28,8 @@ public class LancamentoController {
 	LancamentoService ls;
 	
 	@GetMapping
-	public ResponseEntity<List<LancamentoDto>> listar(){
-		return ls.listar();
+	public ResponseEntity<List<LancamentoDto>> listar(LancamentoFilter lancamentoFilter){
+		return ls.listar(lancamentoFilter);
 	}
 	
 	@GetMapping(value = "/{id}")

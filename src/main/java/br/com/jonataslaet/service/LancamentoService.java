@@ -21,6 +21,7 @@ import br.com.jonataslaet.model.Pessoa;
 import br.com.jonataslaet.repository.CategoriaRepository;
 import br.com.jonataslaet.repository.LancamentoRepository;
 import br.com.jonataslaet.repository.PessoaRepository;
+import br.com.jonataslaet.repository.filter.LancamentoFilter;
 
 @Service
 public class LancamentoService {
@@ -34,8 +35,8 @@ public class LancamentoService {
 	@Autowired
 	PessoaRepository pr;
 
-	public ResponseEntity<List<LancamentoDto>> listar() {
-		List<LancamentoDto> lancamentosDto = LancamentoDto.lancamentosDto(lr.findAll());
+	public ResponseEntity<List<LancamentoDto>> listar(LancamentoFilter lancamentoFilter) {
+		List<LancamentoDto> lancamentosDto = LancamentoDto.lancamentosDto(lr.filtrar(lancamentoFilter));
 		return ResponseEntity.ok(lancamentosDto);
 	}
 
