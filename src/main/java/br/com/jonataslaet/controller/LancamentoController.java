@@ -1,10 +1,10 @@
 package br.com.jonataslaet.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,8 +28,8 @@ public class LancamentoController {
 	LancamentoService ls;
 	
 	@GetMapping
-	public ResponseEntity<List<LancamentoDto>> listar(LancamentoFilter lancamentoFilter){
-		return ls.listar(lancamentoFilter);
+	public Page<LancamentoDto> listar(LancamentoFilter lancamentoFilter, Pageable pageable){
+		return ls.listar(lancamentoFilter, pageable);
 	}
 	
 	@GetMapping(value = "/{id}")

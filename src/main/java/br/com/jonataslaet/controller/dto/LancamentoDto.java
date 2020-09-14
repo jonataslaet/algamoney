@@ -29,6 +29,19 @@ public class LancamentoDto {
 	private Categoria categoria;
 	private Pessoa pessoa;
 
+	public LancamentoDto(Long codigo, String descricao, LocalDate dataVencimento, LocalDate dataPagamento,
+			BigDecimal valor, String observacao, TipoLancamento tipo, Categoria categoria, Pessoa pessoa) {
+		this.codigo = codigo;
+		this.descricao = descricao;
+		this.dataVencimento = dataVencimento;
+		this.dataPagamento = dataPagamento;
+		this.valor = valor;
+		this.observacao = observacao;
+		this.tipo = tipo;
+		this.categoria = categoria;
+		this.pessoa = pessoa;
+	}
+
 	public LancamentoDto(Lancamento lancamento) {
 		this.codigo = lancamento.getCodigo();
 		this.descricao = lancamento.getDescricao();

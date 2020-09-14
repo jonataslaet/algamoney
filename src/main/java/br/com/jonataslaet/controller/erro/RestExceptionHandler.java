@@ -2,6 +2,7 @@ package br.com.jonataslaet.controller.erro;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,13 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 //Quando há uma exceção em algum controller, é aqui que o spring entra
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+	
+	@ExceptionHandler(InvalidDataAccessApiUsageException.class)
+	protected ResponseEntity<Object> handleHttpInvalidDataAccessApiUsage(InvalidDataAccessApiUsageException ex){
+		String erro = "Uso incorreto da api";
+		ErroDeApi apiError = new ErroDeApi(HttpStatus.INTERNAL_SERVER_ERROR, erro, ex.getMostSpecificCause());
+		return construtorDaEntidadeResposta(apiError);
+	}
 	
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
