@@ -19,34 +19,44 @@ import org.springframework.util.StringUtils;
 import br.com.jonataslaet.controller.dto.LancamentoDto;
 import br.com.jonataslaet.model.Lancamento;
 import br.com.jonataslaet.repository.filter.LancamentoFilter;
+import br.com.jonataslaet.repository.projection.ResumoLancamento;
 
-public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
+public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
 	@PersistenceContext
 	private EntityManager manager;
-	
+
 	@Override
 	public Page<LancamentoDto> filtrar(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<LancamentoDto> criteria = builder.createQuery(LancamentoDto.class);
-		
+
 		Root<Lancamento> root = criteria.from(Lancamento.class);
-		criteria.select(builder.construct(LancamentoDto.class,
-		        root.get("codigo"), 
-		        root.get("descricao"),
-		        root.get("dataVencimento"), 
-		        root.get("dataPagamento"),
-		        root.get("valor"),
-		        root.get("observacao"), 
-		        root.get("tipo"),
-		        root.get("categoria"),
-		        root.get("pessoa")
-		));
-		
+		criteria.select(builder.construct(LancamentoDto.class, root.get("codigo"), root.get("descricao"),
+				root.get("dataVencimento"), root.get("dataPagamento"), root.get("valor"), root.get("observacao"),
+				root.get("tipo"), root.get("categoria"), root.get("pessoa")));
+
 		Predicate[] restricoes = getRestricoes(lancamentoFilter, builder, root);
 		criteria.where(restricoes);
-		
+
 		TypedQuery<LancamentoDto> query = manager.createQuery(criteria);
+		adicionarRestricoesDePaginacao(query, pageable);
+		return new PageImpl<>(query.getResultList(), pageable, total(lancamentoFilter));
+	}
+	
+	@Override
+	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		CriteriaQuery<ResumoLancamento> criteria = builder.createQuery(ResumoLancamento.class);
+		Root<Lancamento> root = criteria.from(Lancamento.class);
+		criteria.select(builder.construct(ResumoLancamento.class, root.get("codigo"), root.get("descricao"),
+				root.get("dataVencimento"), root.get("dataPagamento"), root.get("valor"), root.get("tipo"),
+				root.get("categoria").get("nome"), root.get("pessoa").get("nome")));
+
+		Predicate[] restricoes = getRestricoes(lancamentoFilter, builder, root);
+		criteria.where(restricoes);
+
+		TypedQuery<ResumoLancamento> query = manager.createQuery(criteria);
 		adicionarRestricoesDePaginacao(query, pageable);
 		return new PageImpl<>(query.getResultList(), pageable, total(lancamentoFilter));
 	}
@@ -55,19 +65,19 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
 		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
 		Root<Lancamento> root = criteria.from(Lancamento.class);
-		
+
 		Predicate[] predicates = getRestricoes(lancamentoFilter, builder, root);
 		criteria.where(predicates);
-		
+
 		criteria.select(builder.count(root));
 		return manager.createQuery(criteria).getSingleResult();
 	}
 
-	private void adicionarRestricoesDePaginacao(TypedQuery<LancamentoDto> query, Pageable pageable) {
+	private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {
 		int paginaAtual = pageable.getPageNumber();
 		int totalRegistrosPorPagina = pageable.getPageSize();
 		int primeiroRegistroDaPagina = paginaAtual * totalRegistrosPorPagina;
-		
+
 		query.setFirstResult(primeiroRegistroDaPagina);
 		query.setMaxResults(totalRegistrosPorPagina);
 	}
@@ -75,19 +85,22 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 	private Predicate[] getRestricoes(LancamentoFilter lancamentoFilter, CriteriaBuilder builder,
 			Root<Lancamento> root) {
 		List<Predicate> restricoes = new ArrayList<>();
-		
+
 		if (!StringUtils.isEmpty(lancamentoFilter.getDescricao())) {
-			restricoes.add(builder.like(builder.lower(root.get("descricao")), "%"+lancamentoFilter.getDescricao().toLowerCase()+"%"));
+			restricoes.add(builder.like(builder.lower(root.get("descricao")),
+					"%" + lancamentoFilter.getDescricao().toLowerCase() + "%"));
 		}
-		
+
 		if (lancamentoFilter.getDataVencimentoAte() != null) {
-			restricoes.add(builder.lessThanOrEqualTo(root.get("dataVencimento"), lancamentoFilter.getDataVencimentoAte()));
+			restricoes.add(
+					builder.lessThanOrEqualTo(root.get("dataVencimento"), lancamentoFilter.getDataVencimentoAte()));
 		}
-		
+
 		if (lancamentoFilter.getDataVencimentoDe() != null) {
-			restricoes.add(builder.greaterThanOrEqualTo(root.get("dataVencimento"), lancamentoFilter.getDataVencimentoDe()));
+			restricoes.add(
+					builder.greaterThanOrEqualTo(root.get("dataVencimento"), lancamentoFilter.getDataVencimentoDe()));
 		}
-		
+
 		return restricoes.toArray(new Predicate[restricoes.size()]);
 	}
 

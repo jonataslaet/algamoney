@@ -23,6 +23,7 @@ import br.com.jonataslaet.repository.CategoriaRepository;
 import br.com.jonataslaet.repository.LancamentoRepository;
 import br.com.jonataslaet.repository.PessoaRepository;
 import br.com.jonataslaet.repository.filter.LancamentoFilter;
+import br.com.jonataslaet.repository.projection.ResumoLancamento;
 
 @Service
 public class LancamentoService {
@@ -89,5 +90,9 @@ public class LancamentoService {
 				.buildAndExpand(lancamento.getCodigo()).toUri();
 		
 		return ResponseEntity.created(location).body(lancamento);
+	}
+
+	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+		return lr.resumir(lancamentoFilter, pageable);
 	}
 }

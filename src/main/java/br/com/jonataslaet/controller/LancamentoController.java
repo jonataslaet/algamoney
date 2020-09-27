@@ -18,6 +18,7 @@ import br.com.jonataslaet.controller.cadastro.CadastroLancamento;
 import br.com.jonataslaet.controller.dto.LancamentoDto;
 import br.com.jonataslaet.model.Lancamento;
 import br.com.jonataslaet.repository.filter.LancamentoFilter;
+import br.com.jonataslaet.repository.projection.ResumoLancamento;
 import br.com.jonataslaet.service.LancamentoService;
 
 @RestController
@@ -30,6 +31,11 @@ public class LancamentoController {
 	@GetMapping
 	public Page<LancamentoDto> listar(LancamentoFilter lancamentoFilter, Pageable pageable){
 		return ls.listar(lancamentoFilter, pageable);
+	}
+	
+	@GetMapping(params="resumo")
+	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable){
+		return ls.resumir(lancamentoFilter, pageable);
 	}
 	
 	@GetMapping(value = "/{id}")
