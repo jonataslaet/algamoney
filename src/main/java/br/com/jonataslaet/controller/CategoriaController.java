@@ -47,11 +47,13 @@ public class CategoriaController {
 	}
 	
 	@DeleteMapping(value = "/{id}")
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_CATEGORIA') and #oauth2.hasScope('write')")
 	public ResponseEntity<?> deletarCategoria(@PathVariable Long id){
 		return cs.deletarCategoria(id);
 	}
 	
 	@PutMapping(value = "/{id}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('write')")
 	public ResponseEntity<?> atualizarCategoria(@PathVariable Long id, @Valid @RequestBody CadastroCategoria cadastroCategoria) throws IllegalArgumentException, IllegalAccessException{
 		return cs.atualizarCategoria(id, cadastroCategoria);
 	}
