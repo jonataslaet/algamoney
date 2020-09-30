@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.jonataslaet.model.Usuario;
 import br.com.jonataslaet.repository.UsuarioRepository;
+import br.com.jonataslaet.security.UsuarioSistema;
 
 @Service
 public class AutenticacaoService implements UserDetailsService{
@@ -23,8 +24,8 @@ public class AutenticacaoService implements UserDetailsService{
 		if (!usuario.isPresent()) {
 			throw new UsernameNotFoundException("Dados inválidos");
 		}
-		return usuario.get();
-		
+		UsuarioSistema usuarioSistema = new UsuarioSistema(usuario.get());
+		return usuarioSistema;
 	}
 
 }
