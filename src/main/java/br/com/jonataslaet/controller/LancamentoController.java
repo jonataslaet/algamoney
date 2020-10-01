@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,5 +58,11 @@ public class LancamentoController {
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
 	public ResponseEntity<Lancamento>cadastrarLancamento(@Valid @RequestBody CadastroLancamento cadastroLancamento){
 		return ls.cadastrarLancamento(cadastroLancamento);
+	}
+	
+	@PutMapping(value = "/{id}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
+	public ResponseEntity<?> atualizarLancamento(@PathVariable Long id, @Valid @RequestBody CadastroLancamento cadastroLancamento) throws IllegalArgumentException, IllegalAccessException{
+		return ls.atualizarLancamento(id, cadastroLancamento);
 	}
 }

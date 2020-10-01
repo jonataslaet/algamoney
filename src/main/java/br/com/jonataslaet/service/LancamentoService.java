@@ -24,6 +24,7 @@ import br.com.jonataslaet.repository.LancamentoRepository;
 import br.com.jonataslaet.repository.PessoaRepository;
 import br.com.jonataslaet.repository.filter.LancamentoFilter;
 import br.com.jonataslaet.repository.projection.ResumoLancamento;
+import br.com.jonataslaet.utilidade.Utils;
 
 @Service
 public class LancamentoService {
@@ -94,5 +95,29 @@ public class LancamentoService {
 
 	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		return lr.resumir(lancamentoFilter, pageable);
+	}
+	
+	public ResponseEntity<?> atualizarLancamento(Long codigo, CadastroLancamento cadastroNovoLancamento) throws IllegalArgumentException, IllegalAccessException {
+		Optional<Lancamento> lancamentoDoBanco = lr.findById(codigo);
+		if (!lancamentoDoBanco.isPresent()) {
+			throw new ObjectNotFoundException("Lançamento não encontrado");
+		}
+		
+		Optional<Pessoa> pessoa = pr.findById(cadastroNovoLancamento.getPessoa().getCodigo());
+		if (!pessoa.isPresent()) {
+			throw new ObjectNotFoundException("Pessoa não encontrada");
+		}
+		
+		Lancamento lancamentoAtualizado = lancamentoDoBanco.get();
+		Lancamento lancamentoQueAtualiza = new Lancamento(cadastroNovoLancamento.getDescricao(), cadastroNovoLancamento.getDataVencimento(), cadastroNovoLancamento.getDataPagamento(), cadastroNovoLancamento.getValor(), cadastroNovoLancamento.getObservacao(), cadastroNovoLancamento.getTipo());
+		Utils.atualizarObjeto(lancamentoAtualizado, lancamentoQueAtualiza);
+		
+		Pessoa pessoaAtualizada = pessoa.get();
+		Pessoa pessoaQueAtualiza = new Pessoa(cadastroNovoLancamento.getPessoa().getNome(), cadastroNovoLancamento.getPessoa().isAtivo(), cadastroNovoLancamento.getPessoa().getEndereco());
+		Utils.atualizarObjeto(pessoaAtualizada, pessoaQueAtualiza);
+		
+		pr.save(pessoaAtualizada);
+		lr.save(lancamentoAtualizado);
+		return ResponseEntity.noContent().build();
 	}
 }
